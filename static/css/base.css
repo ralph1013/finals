@@ -1,0 +1,85 @@
+/* NAVIGATOR */
+ul{
+    list-style-type: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+li{
+    padding: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid black;
+}
+li:hover{
+    background: #4892ed;
+}
+.navigator{
+    font-family: sans-serif;
+    font-size: 20px;
+    text-decoration: none; 
+    display: block;
+    margin-left: 20px;
+}
+.wrap{
+    display: flex;
+    position: relative;
+}
+.wrap .title{
+    position: fixed;
+    width: 250px;
+    padding: 30px 0;
+    margin: -8px;
+}
+.wrap .title img{
+    height: 200px;
+    width: 200px;
+    margin-left: 10%;
+}
+.wrap .title h2{
+    color: black;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.fieldact{
+    position: relative;
+    margin-top: -150px;
+    left: 1050px;
+}
+.fieldact a{
+    font-size: 14px;
+    position: absolute;
+    margin-top: -35px;
+    margin-left: 165px;
+}
+/* ACTIVITY */
+.events{
+    text-align: center;
+}
+
+/* DASHBOARD */
+
+.field1{
+    height: 250px;
+    width: 712px;
+    margin-left: 260px;
+}
+
+/* TASK */
+.todolist{
+    text-align: center;
+}
+.input{
+    margin-left: 450px;
+}
+#output{
+    display: grid;
+    grid-template-columns: 2fr 100px 100px;
+    padding: 20px 10%;
+    background-color: #f4f4f4;
+    grid-gap: 10px;
+    text-align: left;
+    margin: auto;
+    border: solid 1px black;
+    margin-bottom: 0;
+}

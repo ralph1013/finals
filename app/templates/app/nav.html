@@ -1,0 +1,16 @@
+{% load static %}
+<div class="wrap">
+    <div class="title">
+      <img class="logo" src="{% static 'images/mylogo.jpg' %}">
+        <h2>Welcome</h2>
+            <ul>
+                <li><a class="navigator" href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a class="navigator"  href="{% url 'activity' %}">Activity</a></li>
+                <li><a class="navigator"  href="{% url 'task' %}">Tasks</a></li>
+            </ul>
+        <div class="fieldact">
+            <h3>Activities</h3>
+                <a class="see" href="{% url 'activity' %}">See all</a>
+        </div>
+    </div>
+</div>
