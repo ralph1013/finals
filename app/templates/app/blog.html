@@ -1,0 +1,68 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+<div>
+    <h1>Blog</h1>
+    <nav>
+        <button onclick="showSection('new-post')">New Post</button>
+        <button onclick="showSection('posts')">View Posts</button>
+    </nav>
+
+    <!-- New Post Section -->
+    <div id="new-post" class="section" style="display: none;">
+        <h2>Create a New Post</h2>
+        <form action="{% url 'blog_list' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Post">
+            <input type="button" value="Back" onclick="showSection('posts')">
+        </form>
+    </div>
+
+    <!-- Posts Section -->
+    <div id="posts" class="section">
+        {% for post in posts %}
+        <div class="post">
+            <h3>
+                <a href="#" onclick="showPostDetail({{ post.id }})">{{ post.title }}</a>
+            </h3>
+            <p>{{ post.body }}</p>
+            <button onclick="showEditForm({{ post.id }})">Edit</button>
+            <button onclick="showDeleteConfirmation({{ post.id }})">Delete</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Post Detail Section -->
+    <div id="post-detail" class="section" style="display: none;">
+        <h3 id="detail-title"></h3>
+        <p id="detail-body"></p>
+        <button id="edit-button">Edit</button>
+        <button id="delete-button">Delete</button>
+        <button onclick="showSection('posts')">Back</button>
+    </div>
+
+    <!-- Edit Post Section -->
+    <div id="edit-post" class="section" style="display: none;">
+        <h2>Edit Post</h2>
+        <form id="edit-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update">
+            <input type="button" value="Back" onclick="showSection('posts')">
+        </form>
+    </div>
+
+    <!-- Delete Confirmation Section -->
+    <div id="delete-confirmation" class="section" style="display: none;">
+        <h2>Delete Post</h2>
+        <form id="delete-form" method="post">
+            {% csrf_token %}
+            <p id="delete-message"></p>
+            <input type="submit" value="Confirm">
+            <input type="button" value="Back" onclick="showSection('posts')">
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

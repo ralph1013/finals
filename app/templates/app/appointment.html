@@ -1,0 +1,86 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+    <form class="fieldapp" method="post" action="{% url 'appointment_submit' %}">
+        {% csrf_token %}
+        {{form.as_p}}
+        <div class="booknow">
+            <input type="text" name="firstname" required>
+                <label>First Name</label>
+        </div>
+        <div class="booknow">
+            <input type="text" name="lastname" required>
+                <label>Last Name</label>
+        </div>
+        <div class="booknow">
+            <input type="number" name="contact" required>
+                <label>Contact Number</label>
+        </div>
+        <div class="booknow">
+            <input type="email" name="email" required>
+                <label>Email</label>
+        </div>      
+        <div class="booknow">
+            <input type="date" name="date" value="{{m.dob|date:"d/m/Y"}}" required>
+        </div>
+        <div class="booknow">
+            <input type="time" name="time" value="{{todo.due_time|time:'h i A'}}" required>
+        </div>
+        <div class="booknow">
+            <select name="service_type" required>
+                <option></option>
+                <option>Pet Grooming</option>
+                <option>Consultation</option>
+                <option></option>
+            </select>
+                <label>Service Type</label>
+        </div>
+        <div class="booknow">
+            <input type="submit" id="booknow" value="Book Now">
+        </div>
+    </form>
+
+    <div class="calendar">
+        <h1>{{ month_name }} {{ year }}</h1>
+        <div class="calendar-container">
+            <div class="calendar-navigation">
+                <a href="?month={{ previous_month }}&year={{ previous_year }}">&#8249; Previous</a>
+                <a href="?month={{ next_month }}&year={{ next_year }}">Next &#8250;</a>
+            </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in month_days %}
+                <tr>
+                    {% for day in week %}
+                        {% if day == 0 %}
+                            <td class="empty"></td>
+                        {% else %}
+                            {% if booking_status|default_if_none:day == "fully_booked" %}
+                                <td class="fully-booked">{{ day }}</td>
+                                {% elif booking_status|default_if_none:day == "available" %}
+                                    <td class="available">{{ day }}</td>
+                            {% elif day == today %}
+                                <td><span class="today">{{ day }}</span></td>
+                            {% else %}
+                                <td>{{ day }}</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+{% endblock content %}

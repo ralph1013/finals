@@ -4,14 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="{% static 'js/base.js' %}"></script>
     <title></title>
 </head>
 <body>
-    {% include 'app/nav.html' %}
+    <div class="wrap">
+        <div class="wrapper">
+                <ul>
+                    <li><a  href="{% url 'dashboard' %}">Home</a></li>
+                    <li><a  href="{% url 'about' %}">About</a></li>
+                    <li><a  href="{% url 'service' %}">Service</a></li>
+                    <li><a  href="{% url 'appointment' %}">Appointment</a></li>
+                    <li><a  href="{% url 'blog_list' %}">Blog</a></li>
+                </ul>
+                
+        </div>
+    </div>
 
     {% block content %}
     {% endblock content %}
-    
-    <script src="{% static 'js/base.js' %}"></script>
 </body>
 </html>
