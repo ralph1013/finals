@@ -11,7 +11,7 @@ body{
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    margin-left: 25%;
+    margin-left: -50px;
 }
 .wrapper ul li{
     list-style: none;
@@ -20,13 +20,14 @@ body{
     font-weight: bold;
     cursor: pointer;
 }
-.wrapper ul li:hover{
-    color: blanchedalmond;
-}
 .wrapper ul li a{
     color: black;
     text-decoration: none;
     font-size: 20px;
+}
+.wrapper ul li a:hover{
+    padding: 10px 0;
+    border-bottom: 2px solid black;
 }
 .wrap{
     width: 100%;
@@ -43,13 +44,35 @@ body{
     align-items: center;
     padding: 0px 25px;
 }
-.wrap .wrapper .login{
-    color: black;
+.wrap .wrapper a{
     text-decoration: none;
-    font-size: 20px;
-    cursor: pointer;
 }
-
+.wrap .wrapper a h3{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 2rem;
+    color: black;
+}
+.wrap .wrapper a h3 span{
+    color: #5b69fa;
+    padding: 0 3px;
+}
+.wrap .wrapper .login{
+    position: relative;
+    left: -50px;
+    font-size: 1.2rem;
+    color: black;
+}
+.wrap .wrapper .login p{
+    text-transform: capitalize;
+}
+.wrap .wrapper .login a{
+    width: 25px;
+    height: 25px;
+    padding: 5px 12px;
+    border: 1px solid #5b69fa;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: black;
+}
 /* ABOUT */
 .events{
     text-align: center;
@@ -62,7 +85,17 @@ body{
     height: auto;
     margin: auto;
 }
+.content img{
+    position: absolute;
+    max-width: 100%;
+    width: 100%;
+    height: 85%;
+    top: 15%;
+    left: 0;
+    opacity: 0.5;
+}
 .content h1{
+    position: relative;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     font-size: 50px;
@@ -245,6 +278,61 @@ body{
     display: inline-block;
     line-height: 30px;
 }
+.recordpage{
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+.recordpage h1{
+    color: #003366;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.recordpage h1 table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.recordpage h1 table th, td{
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+.recordpage h1 table th, td:nth-child(1){
+    text-transform: capitalize;
+}
+.recordpage h1 table th, td:nth-child(2){
+    text-transform: capitalize;
+}
+.recordpage h1 table th{
+    background-color: #003366;
+    color: white;
+}
+.recordpage h1 table tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+.recordpage h1 table tr:hover{
+    background-color: #e0e0e0;
+}
+.recordpage a{
+    color: #003366;
+    text-decoration: none;
+}
+.recordpage a:hover {
+    text-decoration: underline; 
+}
+.recordpage form button{
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+.recordpage form button:hover{
+    background-color: #00509e; 
+}
 
 /* Blog */
 .una{
@@ -255,14 +343,151 @@ body{
 }
 
 
-.fully-booked {
+.fully-booked{
     background-color: red;
     color: white;
 }
 
-.available {
+.available{
     background-color: green;
     color: white;
 }
+.blogpage{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.blogpage .blogformpage{
+    margin-bottom: 20px; 
+    padding: 20px; 
+}
+.blogpage .blogformpage form{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px;
+}
+.blogpage .blogformpage form label{
+    display: none;
+}
+.blogpage .blogformpage form textarea{
+    position: relative;
+    padding: 30px 120px;
+    resize: none;
+    border-top: none;
+    border-bottom: 2px solid #5b69fa;
+    border-left: 2px solid #5b69fa;
+    border-right: 2px solid #5b69fa;
+}
+.blogpage .blogformpage form input{
+    border: 1px solid #5b69fa;
+    margin-top: 10px;
+    width: 50%;
+}
+.blogpage .blogformpage form button{
+    position: absolute;
+    background-color: #003366; 
+    color: white; 
+    border: none;
+    max-width: 100px;
+    padding: 10px; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    transition: background-color 0.3s;
+    margin-left: 410px;
+    top: 80px;
+}
+.blogpage .blogformpage form button:hover{
+    background-color: #00509e;
+}
+.blogpage ul {
+    position: absolute;
+    list-style-type: none; 
+}
+.blogpage ul li{
+    position: relative;
+    margin-bottom: 20px;
+    width: 550px;
+    padding: 22px 10px;
+    top: 170px;
+    border: 1px solid #ddd;
+    border-radius: 8px; 
+    background-color: #f9f9f9; 
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+.blogpage ul li a{
+    color: #003366;
+    text-decoration: none; 
+    margin-right: 10px; 
+}
+.loginpage{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 150px 0;
+}
+.loginpage h2{
+    position: absolute;
+    top: 70px;
+    font-size: 2rem;
+}
+.loginpage form label{
+    position: relative;
+    display: flex;
+    padding: 5px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 20px;
+}
+.loginpage form input{
+    position: relative;
+    width: 180px;
+    height: 25px;
+    left: 20px;
+    border-radius: 20px;
+}
+.loginpage form button{
+    margin-top: 12px;
+    margin-left: 130px;
+    padding: 8px 20px;
+    border: 1px solid #5b69fa;
+    background-color: #5b69fa;
+    color: white;
+}
+.loginpage a{
+    position: absolute;
+    margin-left: -110px;
+    margin-top: 147px;
+    text-decoration: none;
+    padding: 7px 12px;
+    border: 1px solid #5b69fa;
+    background-color: #5b69fa;
+    color: white;
+}
 
-
+@media (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+        display: block; 
+    }
+    th {
+        display: none; 
+    }
+    tr {
+        margin-bottom: 15px; 
+    }
+    td {
+        text-align: right; 
+        position: relative; 
+        padding-left: 50%;
+    }
+    td:before {
+        content: attr(data-label); 
+        position: absolute; 
+        left: 10px; 
+        width: calc(50% - 20px); 
+        padding-right: 10px; 
+        white-space: nowrap; 
+        text-align: left;
+        font-weight: bold;
+    }
+}

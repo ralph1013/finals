@@ -3,7 +3,6 @@
 {% block content %}
     <form class="fieldapp" method="post" action="{% url 'appointment_submit' %}">
         {% csrf_token %}
-        {{form.as_p}}
         <div class="booknow">
             <input type="text" name="firstname" required>
                 <label>First Name</label>

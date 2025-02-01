@@ -1,0 +1,14 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="deletepage">
+<h1>Confirm Deletion</h1>
+<p>Are you sure you want to delete "{{ object.title }}"?</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Confirm</button>
+    <a href="{% url 'appointment_records' %}">Cancel</a>
+</form>
+</div>
+{% endblock content %}

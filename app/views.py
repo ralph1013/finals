@@ -1,12 +1,46 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 from .models import Poste, Appointment
 import calendar
 from datetime import datetime
 from django.http import JsonResponse
 from django.contrib import messages
 from django.urls import reverse_lazy
-from .forms import PostForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'app/signup.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')
+            else:
+                return render(request, 'app/login.html', {'form': form, 'error': 'Invalid username or password'})
+    else:
+        form = AuthenticationForm()
+    return render(request, 'app/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('dashboard')            
 
 def appointment_submit(request):
     if request.method == 'POST':
@@ -28,7 +62,7 @@ def appointment_submit(request):
         service_type = service_type
     )
     messages.success(request, 'Appointment booked successfully!')
-    return redirect(f'/appointment/?month={date.split("-")[1]}&year={date.split("-")[0]}')
+    return redirect(f'/appointment/?month={date.split("-")[1]}&day={date.split("-")[0]}&year={date.split("-")[0]}')
 
 def get_appointments(request):
    
@@ -41,6 +75,21 @@ def get_appointments(request):
         'start': f"{appointment.date}T{appointment.time}",
     })
     return JsonResponse(events, safe=False)   
+
+def get_appointments_for_day(request):
+    day = request.GET.get('day')
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+    
+    appointments = Appointment.objects.filter(date__day=day, date__month=month, date__year=year)
+    appointment_data = [{
+        'id': appt.id,
+        'name': f"{appt.firstname} {appt.lastname}",
+        'service': appt.service_type,
+        'time': appt.time.strftime("%H:%M"),
+    } for appt in appointments]
+    
+    return JsonResponse(appointment_data, safe=False)
 
 class HomePageView(TemplateView):
     template_name = 'app/dashboard.html'
@@ -83,15 +132,15 @@ class AppointmentPageView(TemplateView):
         years = range(year - 5, year + 6)
         
         appointments = Appointment.objects.filter(date__year=year, date__month=month)
-        booking_status = {day: "not_booked" for day in range(1, 32)}
+        booking_status = {day: {"status": "not_booked", "appointments": []} for day in range(1, 32)}
         for appt in appointments:
             day = appt.date.day
-            daily_appointments = appointments.filter(date__day=day)
-            if daily_appointments.count() >= 5:  # Assume 5 is the max slots per day
-                booking_status[day] = "fully_booked"
+            booking_status[day]["appointments"].append(appt)
+            if len(booking_status[day]["appointments"]) >= 5:  
+                booking_status[day]["status"] = "fully_booked"
             else:
-                booking_status[day] = "available"
-        
+                booking_status[day]["status"] = "available"
+                
         context.update({
             'year': int(year),
             'month': int(month),
@@ -104,50 +153,77 @@ class AppointmentPageView(TemplateView):
             'next_month': next_month,
             'next_year': next_year,
             'booking_status': booking_status,
+            'appointments': appointments, 
         })
         return context
     
     def appoinment(request):
         return render(request, 'appointment.html')
 
-class BlogListView(TemplateView):
+class BlogListView(CreateView, ListView):
+    model = Poste
     template_name = 'app/blog.html'
-
+    fields = ['body', 'image']
+    success_url = reverse_lazy('blog_list')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['posts'] = Poste.objects.all()
-        context['form'] = PostForm()  # Include the form for creating a new post
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            body = request.POST.get('body')
+            if body and request.user.is_authenticated:
+                post = Poste(user=request.user, body=body)
+                post.save()
+            return redirect('blog_list')
+
+class AppointmentRecordsView(TemplateView):
+    template_name = 'app/record.html' 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appointments'] = Appointment.objects.all()
         return context
 
-    def post(self, request):
-        # Handle creating a new post
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save()
-            return JsonResponse({'status': 'success', 'post': {'id': post.id, 'title': post.title, 'body': post.body}})
-        else:
-            return JsonResponse({'status': 'error', 'errors': form.errors})
+class AppointmentUpdateView(UpdateView):
+    model = Appointment
+    template_name = 'app/edit_appointment.html'
+    fields = ['firstname', 'lastname', 'contact', 'email', 'date', 'time', 'service_type']
+    success_url = reverse_lazy('appointment_records')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appointment'] = self.object
+        return context
 
-class BlogDetailView(View):
-    def get(self, request, pk):
-        post = get_object_or_404(Poste, pk=pk)
-        return JsonResponse({'post': {'id': post.id, 'title': post.title, 'body': post.body}})
+class AppointmentDeleteView(DeleteView):
+    model = Appointment
+    template_name = 'app/delete_appoinment.html'
+    success_url = reverse_lazy('appointment_records')
 
-    def post(self, request, pk):
-        if 'delete' in request.POST:
-            post = get_object_or_404(Poste, pk=pk)
-            post.delete()
-            return JsonResponse({'status': 'success'})
-        else:
-            post = get_object_or_404(Poste, pk=pk)
-            form = PostForm(request.POST, instance=post)
-            if form.is_valid():
-                post = form.save()
-                return JsonResponse({'status': 'success', 'post': {'id': post.id, 'title': post.title, 'body': post.body}})
-            else:
-                return JsonResponse({'status': 'error', 'errors': form.errors})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appointment'] = self.get_object()
+        return context
 
-    def delete(self, request, pk):
-        post = get_object_or_404(Poste, pk=pk)
-        post.delete()
-        return JsonResponse({'status': 'success'})
+class BlogUpdateView(UpdateView):
+    model = Poste
+    template_name = 'app/blog_edit.html'
+    fields = ['body', 'image']
+    success_url = reverse_lazy('blog_list')
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user 
+        return super().form_valid(form)
+
+class BlogDeleteView(DeleteView):
+    model = Poste
+    template_name = 'app/blog_delete.html'
+    success_url = reverse_lazy('blog_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = self.get_object()
+        return context
